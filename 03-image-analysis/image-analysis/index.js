@@ -1,5 +1,5 @@
 'use-strict';
-const { promises: { readFile } } = require('fs');
+const { get } = require('axios')
 const { Rekognition, Translate } = require('aws-sdk');
 
 class Handler {
@@ -53,9 +53,20 @@ class Handler {
     return finalText.join('\n')
   }
 
-  async main() {
+  async getImageBuffer(imageUrl) {
+    const response = await get(imageUrl, {
+      responseType: 'arraybuffer'
+    })
+    const buffer = Buffer.from(response.data, 'base64')
+    return buffer
+  }
+
+  async main(event) {
     try {
-      const imgBuffer = await readFile('./images/cat.jpg')
+      const { imageUrl } = event.queryStringParameters
+      console.log('Downloading image....')
+      const imgBuffer = await this.getImageBuffer(imageUrl)
+
       console.log('Detecting Labels...')
       const { names, workingItems } = await this.detectImagesLabels(imgBuffer)
 
