@@ -38,7 +38,7 @@ resources:
 
 functions:
   hero-insert:
-    handler: handler.heroesInsert
+    handler: index.heroesInsert
     events:
       - http:
           path: heroes
