@@ -14,6 +14,8 @@ provider:
             - dynamodb:GetItem
             - dynamodb:UpdateItem
             - dynamodb:PutItem
+            - dynamodb:ListStreams
+            - dynamodb:DescribeStreams
           Resource: "arn:aws:dynamodb:${aws:region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
 
 resources:
@@ -35,6 +37,8 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
 
 functions:
   hero-insert:
@@ -44,3 +48,13 @@ functions:
           path: heroes
           method: post
           cors: true
+
+  hero-trigger:
+    handler: index.heroesTrigger
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt: 
+              - HeroesTable
+              - StreamArn
