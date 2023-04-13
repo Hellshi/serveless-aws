@@ -1,0 +1,13 @@
+service: lambda-environment
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  stage: ${opt:stage, "qa"}
+  environment:
+    ${file(./config/env.${self:provider.stage}.json)}
+
+functions:
+  commit-message-scheduler:
+    handler: index.scheduler
