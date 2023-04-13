@@ -1,5 +1,11 @@
 {
+  "scripts": {
+    "local": "sls invoke local -f hero-insert --path requests-mock/heroInsert.json",
+    "invoke": "sls invoke -f hero-insert --path requests-mock/heroInsert.json --log"
+  },
   "dependencies": {
-    "aws-sdk": "^2.1353.0"
+    "@hapi/joi": "^17.1.1",
+    "aws-sdk": "^2.1353.0",
+    "uuid": "^9.0.0"
   }
 }
