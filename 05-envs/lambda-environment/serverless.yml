@@ -7,7 +7,27 @@ provider:
   stage: ${opt:stage, "qa"}
   environment:
     ${file(./config/env.${self:provider.stage}.json)}
+  iam:
+    role:
+      statements: ${file(./config/serverless/db.iam.role.yaml)}
+
+resources:
+  Resources:
+    ${file(./config/serverless/resources/dynamo.hero.table.yaml)}
+
+custom:
+  schedulerRate: rate(1 minute)
+  enable: true
+  tableName: ${self:provider.environment.DbTableName}
+  dbWriteCapacityUnits: ${self:provider.environment.DbWriteCapacityUnits}
+  dbReadCapacityUnits: ${self:provider.environment.DbReadCapacityUnits}
 
 functions:
   commit-message-scheduler:
     handler: index.scheduler
+    events:
+      - schedule:
+          rate: ${self:custom.schedulerRate}
+          name: schedule-commit-message-${self:provider.stage}
+          description: get commit messages each minute
+          enabled: ${self:custom.enable}
