@@ -14,7 +14,8 @@ functions:
       - http:
           path: 'hello'
           method: 'get'
-
+#Node 16.x has issues to run locally due to a python incomparability
+#As for Node 18.x is not available to be downloaded resulting in: "No valid trust data for nodejs18.x"
 layers:
   commonLibs:
     path: layer
