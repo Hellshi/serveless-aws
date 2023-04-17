@@ -1,0 +1,22 @@
+service: layers-node-js-modules
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+
+functions:
+  hello:
+    handler: index.hello
+    layers:
+      - {Ref: CommonLibsLambdaLayer}
+    events:
+      - http:
+          path: 'hello'
+          method: 'get'
+
+layers:
+  commonLibs:
+    path: layer
+    compatibleRuntimes:
+      - nodejs12.x
