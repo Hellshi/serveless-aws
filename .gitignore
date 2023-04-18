@@ -4,3 +4,4 @@ logs
 dependencies
 dependencies.*
 node_modules
+volume

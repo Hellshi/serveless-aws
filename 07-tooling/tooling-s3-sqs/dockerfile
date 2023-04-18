@@ -1,8 +1,8 @@
-FROM lambci/lambda:build-nodejs16.x
+FROM node:16
 
 WORKDIR /src/
 
-COPY package.json yarn.lock /src/
+COPY package.json package-lock.json /src/
 
 RUN npm install
 
