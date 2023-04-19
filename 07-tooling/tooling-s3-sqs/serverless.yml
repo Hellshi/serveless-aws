@@ -13,6 +13,10 @@ plugins:
 custom:
   serverless-offline:
     useChildProcess: true
+    stages:
+      - local
+    host: http://127.0.0.1
+    debug: true
 
 functions:
   function1:
