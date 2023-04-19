@@ -16,7 +16,7 @@
     "serverless": "^3.30.1",
     "serverless-localstack": "^1.0.6",
     "serverless-mocha-plugin": "^1.12.0",
-    "serverless-offline": "^12.0.4"
+    "serverless-offline": "11.6.0"
   },
   "dependencies": {
     "aws-sdk": "^2.1360.0"
