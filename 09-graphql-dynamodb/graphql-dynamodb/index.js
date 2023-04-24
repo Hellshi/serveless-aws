@@ -1,34 +1,28 @@
-const { DynamoDB, Endpoint } = require('aws-sdk')
+const AWS = require('aws-sdk')
 
-const setUpDynamoDb = () => {
-  if(!process.env.IS_OFFLINE)
-    return
-  
+function setupDynamoDB() {
+  if (!process.env.IS_LOCAL)
+    return new AWS.DynamoDB.DocumentClient();
+
   const host = process.env.LOCALSTACK_HOST
   const port = process.env.DYNAMODB_PORT
-  console.log(`DynamoBoy is running local at host: ${host}, port: ${port}`)
-
-  return new DynamoDB({
-    region: "localhost",
-    httpOptions: {
-      timeout: 5000
-    }
-   /*  credentials: {
-      accessKeyId: "DEFAULT_ACCESS_KEY",
-      secretAccessKey: "DEFAULT_SECRET",
-    },
-    endPoint: Endpoint(`http://${host}:${port}`) */
+  console.log('running dynamodb locally!', host, port)
+  return new AWS.DynamoDB.DocumentClient({
+    region: 'localhost',
+    accessKeyId: "DEFAULT_ACCESS_KEY",
+    secretAccessKey: "DEFAULT_SECRET",
+    endpoint: new AWS.Endpoint(`http://${host}:${port}`)
   })
 }
 
-module.exports.handler = async (event) => {
-  const dynamoDb = setUpDynamoDb()
-  dynamoDb.listTables({}, (err, data) => {
-    if (err) console.log(err, err.stack);
-    else console.log(data);
-  });
+module.exports.handler = async event => {
 
-  const skills = await dynamoDb.scan({
+  const dynamodb = setupDynamoDB()
+  const heroes = await dynamodb.scan({
+    TableName: process.env.HEROES_TABLE
+  }).promise()
+  
+  const skills = await dynamodb.scan({
     TableName: process.env.SKILLS_TABLE
   }).promise()
 
@@ -36,11 +30,12 @@ module.exports.handler = async (event) => {
     statusCode: 200,
     body: JSON.stringify(
       {
-        skills, 
-        heroes: ""
-      },
-      null,
-      2
+        skills,
+        heroes
+      }
     ),
   };
+
+  // Use this code if you don't use the http event with the LAMBDA-PROXY integration
+  // return { message: 'Go Serverless v1.0! Your function executed successfully!', event };
 };

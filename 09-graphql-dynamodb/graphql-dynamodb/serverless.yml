@@ -1,9 +1,9 @@
 service: graphql-dynamodb
-frameworkVersion: '3'
+frameworkVersion: '2'
 
 provider:
   name: aws
-  runtime: nodejs18.x
+  runtime: nodejs14.x
   environment:
     HEROES_TABLE: Heroes
     SKILLS_TABLE: Skills
@@ -33,6 +33,8 @@ plugins:
 
 custom:
   dynamobd:
+    stages:
+      - ${sls:stage}
     start:
       host: ${self:provider.environment.LOCALSTACK_HOST}
       port: ${self:provider.environment.DYNAMODB_PORT}

@@ -7,24 +7,26 @@ setupDynamoDBClient()
 const HeroFactory = require('./src/core/factories/heroFactory')
 const SkillFactory = require('./src/core/factories/skillFactory')
 
-// Construct a schema, using GraphQL schema language
-const typeDefs = gql`
-  type Query {
-    hello: String
-  }
-`;
+const isLocal = process.env.IS_LOCAL
 
-// Provide resolver functions for your schema fields
-const resolvers = {
-  Query: {
-    hello: () => 'Hello world!',
-  },
-};
+const schema = require('./src/graphql')
 
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
+  schema ,
+  // permitir execucao no frontend e obtencao dos schemas
+  introspection: isLocal,
+  // frontend
+  playground: isLocal,
+  formatError(error) {
+    console.error('[Global error logger]', error)
+    return error
+  },
+  formatResponse(response) {
+    console.log('[Global logger]', response)
+    return response
+  }
 });
+
 
 exports.handler = server.createHandler({
   cors: {
@@ -33,7 +35,7 @@ exports.handler = server.createHandler({
   },
 });
 
-async function main() {
+/* async function main() {
   console.log('creating factories..')
   const skillFactory = await SkillFactory.createInstance()
   const heroFactory = await HeroFactory.createInstance()
@@ -84,4 +86,4 @@ async function main() {
 
 }
 
-module.exports.test = main
+module.exports.test = main */
