@@ -1,43 +1,87 @@
 'use strict';
 
-const AWS = require('aws-sdk')
+const { ApolloServer, gql } = require('apollo-server-lambda');
+const setupDynamoDBClient = require('./src/core/util/setupDynamoDB')
+setupDynamoDBClient()
 
-function setupDynamoDB() {
-  if (!process.env.IS_LOCAL)
-    return new AWS.DynamoDB.DocumentClient();
+const HeroFactory = require('./src/core/factories/heroFactory')
+const SkillFactory = require('./src/core/factories/skillFactory')
 
-  const host = process.env.LOCALSTACK_HOST
-  const port = process.env.DYNAMODB_PORT
-  console.log('running dynamodb locally!', host, port)
-  return new AWS.DynamoDB.DocumentClient({
-    region: 'localhost',
-    accessKeyId: "DEFAULT_ACCESS_KEY",
-    secretAccessKey: "DEFAULT_SECRET",
-    endpoint: new AWS.Endpoint(`http://${host}:${port}`)
+// Construct a schema, using GraphQL schema language
+const typeDefs = gql`
+  type Query {
+    hello: String
+  }
+`;
+
+// Provide resolver functions for your schema fields
+const resolvers = {
+  Query: {
+    hello: () => 'Hello world!',
+  },
+};
+
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+});
+
+exports.handler = server.createHandler({
+  cors: {
+    origin: '*',
+    credentials: true,
+  },
+});
+
+async function main() {
+  console.log('creating factories..')
+  const skillFactory = await SkillFactory.createInstance()
+  const heroFactory = await HeroFactory.createInstance()
+
+  console.log('inserting skill item')
+  const skillId = `${new Date().getTime()}`
+  await skillFactory.create({
+    id: skillId,
+    name: 'mage',
+    value: 50
   })
-}
+  console.log('getting skil item')
+  const skillItem = await skillFactory.findOne(skillId)
+  console.log('skillItem', skillItem)
 
-module.exports.hello = async event => {
+  const allSkills = await skillFactory.findAll()
+  console.log('allSkills', allSkills)
 
-  const dynamodb = setupDynamoDB()
-  const heroes = await dynamodb.scan({
-    TableName: process.env.HEROES_TABLE
-  }).promise()
-  
-  const skills = await dynamodb.scan({
-    TableName: process.env.SKILLS_TABLE
-  }).promise()
+  console.log('\n------------\n')
+
+  console.log('inserting hero item')
+  const heroId = `${new Date().getTime()}`
+  await heroFactory.create({
+    id: heroId,
+    name: 'Batman',
+    skills: [skillId]
+  })
+
+  const hero = await heroFactory.findOne(heroId)
+  console.log('hero', hero)
+
+  const allHeroes = await heroFactory.findAll()
+  console.log('allHeroes', allHeroes)
 
   return {
     statusCode: 200,
-    body: JSON.stringify(
-      {
-        skills,
-        heroes
+    body: JSON.stringify({
+      hero: {
+        hero,
+        allHeroes
+      },
+      skill: {
+        skillItem,
+        allSkills
       }
-    ),
-  };
+    })
+  }
 
-  // Use this code if you don't use the http event with the LAMBDA-PROXY integration
-  // return { message: 'Go Serverless v1.0! Your function executed successfully!', event };
-};
+}
+
+module.exports.test = main
