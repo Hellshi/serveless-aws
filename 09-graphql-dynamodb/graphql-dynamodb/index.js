@@ -6,25 +6,27 @@ const setUpDynamoDb = () => {
   
   const host = process.env.LOCALSTACK_HOST
   const port = process.env.DYNAMODB_PORT
-
   console.log(`DynamoBoy is running local at host: ${host}, port: ${port}`)
 
-  return new DynamoDB.DocumentClient({
-    region: process.env.AWS_DEFAULT_REGION,
-    /* credentials: {
+  return new DynamoDB({
+    region: "localhost",
+    httpOptions: {
+      timeout: 5000
+    }
+   /*  credentials: {
       accessKeyId: "DEFAULT_ACCESS_KEY",
       secretAccessKey: "DEFAULT_SECRET",
-    }, */
-    endPoint: Endpoint(`http://${host}:${port}`)
+    },
+    endPoint: Endpoint(`http://${host}:${port}`) */
   })
 }
 
 module.exports.handler = async (event) => {
   const dynamoDb = setUpDynamoDb()
-
-  const heroes = await dynamoDb.scan({
-    TableName: process.env.HEROES_TABLE
-  }).promise()
+  dynamoDb.listTables({}, (err, data) => {
+    if (err) console.log(err, err.stack);
+    else console.log(data);
+  });
 
   const skills = await dynamoDb.scan({
     TableName: process.env.SKILLS_TABLE
@@ -35,7 +37,7 @@ module.exports.handler = async (event) => {
     body: JSON.stringify(
       {
         skills, 
-        heroes
+        heroes: ""
       },
       null,
       2
