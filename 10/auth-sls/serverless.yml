@@ -18,6 +18,9 @@ functions:
           path: login
           method: post
           cors: true
+  authorizerFunc:
+    handler: src/authorizer.handler
+
   heroes-public:
     handler: src/getHeroes.public
     events:
@@ -30,12 +33,14 @@ functions:
             headers:
               - Content-Type
               - Authorization
+
   heroes-private:
     handler: src/getHeroes.private
     events:
       - http:
           path: private
           method: get
+          authorizer: authorizerFunc
           cors:
             origins:
               - '*'
