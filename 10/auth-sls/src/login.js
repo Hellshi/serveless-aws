@@ -30,7 +30,6 @@ const login = async event => {
         scopes: validUser.scopes,
         username: validUser.username
     }
-
     const token = sign({
         user: signUser,
         // 5 minutos

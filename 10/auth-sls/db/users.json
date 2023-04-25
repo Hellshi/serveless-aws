@@ -10,7 +10,7 @@
         "username": "ronaldinho",
         "password": "123",
         "scopes": [
-
+            "heroes:create"
         ]
     }
 ]
