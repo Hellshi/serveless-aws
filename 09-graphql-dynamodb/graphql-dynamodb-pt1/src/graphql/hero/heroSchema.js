@@ -1,8 +1,14 @@
 const typeDefinitions = `
+    type Skill {
+        id: String
+        name: String
+        value: Int
+    }
+
     type Hero {
         id: String
         name: String
-        skills: [String]
+        skills(id: String): [Skill]
     }
 
     type Query {
