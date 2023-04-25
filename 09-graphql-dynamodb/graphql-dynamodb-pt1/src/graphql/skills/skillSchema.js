@@ -3,7 +3,7 @@ const typeDefinitions = `
         getSkill: String
     }
 
-    Type Mutation {
+    type Mutation {
         createSkill: String
     }
 `

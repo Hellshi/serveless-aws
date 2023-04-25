@@ -3,7 +3,7 @@ const typeDefinitions = `
         getHero: String
     }
 
-    Type Mutation {
+    type Mutation {
         createHero: String
     }
 `
