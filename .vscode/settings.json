@@ -3,6 +3,7 @@
         "dynamobd",
         "dynamoose",
         "dynamose",
-        "LOCALSTACK"
+        "LOCALSTACK",
+        "Recieved"
     ]
 }

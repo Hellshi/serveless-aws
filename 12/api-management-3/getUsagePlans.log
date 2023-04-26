@@ -1,0 +1,50 @@
+{
+  "items": [
+    {
+      "id": "4wvncu",
+      "name": "api-management-free-dev",
+      "description": "Usage plan \"free\" for api-management dev stage",
+      "apiStages": [
+        {
+          "apiId": "gmiapyq55h",
+          "stage": "dev"
+        }
+      ],
+      "throttle": {
+        "burstLimit": 200,
+        "rateLimit": 200
+      },
+      "quota": {
+        "limit": 5,
+        "offset": 0,
+        "period": "MONTH"
+      },
+      "tags": {
+        "STAGE": "dev"
+      }
+    },
+    {
+      "id": "pyg1s4",
+      "name": "api-management-paid-dev",
+      "description": "Usage plan \"paid\" for api-management dev stage",
+      "apiStages": [
+        {
+          "apiId": "gmiapyq55h",
+          "stage": "dev"
+        }
+      ],
+      "throttle": {
+        "burstLimit": 400,
+        "rateLimit": 50
+      },
+      "quota": {
+        "limit": 1000,
+        "offset": 0,
+        "period": "DAY"
+      },
+      "tags": {
+        "STAGE": "dev"
+      }
+    }
+  ]
+}
