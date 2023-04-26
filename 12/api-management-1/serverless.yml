@@ -1,0 +1,43 @@
+service: api-management
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  apiGateway:
+    apiKeys:
+    # slicing in different plans allow you to set different access limits
+      - free: ${file(./default-customers.js):private}
+      - paid: 
+          - myPaidKey
+          - hellemsantos@gmail.com
+    usagePlan:
+      - free:
+          quota:
+            limit: 5
+            period: MONTH
+          throttle:
+            burstLimit: 200
+            rateLimit: 200
+      - paid:
+          quota:
+            limit: 1000
+            period: DAY
+          throttle:
+            burstLimit: 400
+            rateLimit: 50
+
+package:
+  excludeDevDependencies: true
+
+plugins:
+  - serverless-offline
+
+functions:
+  function1:
+    handler: index.handler
+    events:
+      - http:
+          path: hello
+          method: get
+          private: true
