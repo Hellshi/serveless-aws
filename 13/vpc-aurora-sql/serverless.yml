@@ -1,0 +1,25 @@
+service: vpc-aurora-sql
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  environment: 
+    MYSQL_HOST: ${env:MYSQL_HOST, "localhost"}
+    MYSQL_USER: ${env:MYSQL_USER, "root"}
+    MYSQL_PASS: ${env:MYSQL_PASS, "root"}
+    MYSQL_DATABASE: ${env:MYSQL_DATABASE, "database"}
+
+plugins: 
+  - serverless-offline
+
+package:
+  excludeDevDependencies: true
+
+functions:
+  function1:
+    handler: src/index.handler
+    events:
+      - http:
+          method: any
+          path: hello
