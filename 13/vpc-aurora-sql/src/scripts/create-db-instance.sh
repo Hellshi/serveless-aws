@@ -21,7 +21,7 @@ aws rds create-db-cluster \
 CREATING="creating"
 STATUS=$CREATING
 
-while [ $STATUS==$CREATING ]
+while [ $STATUS == $CREATING ]
 do
     STATUS=$(aws rds describe-db-clusters \
         --db-cluster-identifier $CLUSTER_NAME \
@@ -31,3 +31,38 @@ do
     echo $STATUS
     sleep 1
 done
+
+aws secretsmanager create-secret \
+    --name $SECRET_NAME \
+    --description "Credentials for aurora serverless db" \
+    --secret-string '{"username": "'$USERNAME'", "password": "'$PASSWORD'"}' \
+    --region us-east-1 \
+    | tee secret.txt
+
+aws rds-data execute-statement \
+    --resource-arn $RESOURCE_ARN \
+    --secret-arn $SECRET_ARN \
+    --database mysql \
+    --sql "show databases;" \
+    --region us-east-1 \
+    | tee cmd-show-dbs.txt
+
+aws rds-data execute-statement \
+    --resource-arn $RESOURCE_ARN \
+    --secret-arn $SECRET_ARN \
+    --database mysql \
+    --sql "CREATE DATABASE $DB_NAME;" \
+    --region us-east-1 \
+    | tee cmd-create-db.txt
+
+aws rds describe-db-subnet-groups \
+    | tee db-subnets.txt
+
+aws secretsmanager delete-secret \
+    --secret-id $SECRET_NAME \
+    | tee secret-delete.txt
+
+aws rds delete-db-cluster \
+    --db-cluster-identifier $CLUSTER_NAME \
+    --skip-final-snapshot \
+    | tee rds-delete.cluster.txt
