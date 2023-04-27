@@ -5,3 +5,4 @@ dependencies
 dependencies.*
 node_modules
 volume
+secrets.sh

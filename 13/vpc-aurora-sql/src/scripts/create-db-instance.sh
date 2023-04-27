@@ -1,12 +1,11 @@
-CLUSTER_NAME=serverless-course
-USERNAME=hellshi
-PASSWORD=jh62mg21-dr
-DB_NAME=heroes
-SECRET_NAME=aourora-secret01
-
-RESOURCE_ARN=arn:aws:rds:us-east-1:243886104914:cluster:serverless-course
-SECRET_ARN=arn:aws:secretsmanager:us-east-1:243886104914:secret:aourora-secret02-xsuqCS
-
+# required variables
+CLUSTER_NAME=
+USERNAME=
+PASSWORD=
+DB_NAME=
+SECRET_NAME=
+RESOURCE_ARN=
+SECRET_ARN=
 aws rds create-db-cluster \
     --engine-version 5.6.10a \
     --db-cluster-identifier $CLUSTER_NAME \

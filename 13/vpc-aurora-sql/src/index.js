@@ -3,6 +3,7 @@ const { faker } = require('@faker-js/faker')
 
 const handler = async event => {
     try {
+        console.log(process.env)
         await sequelize.authenticate()
         await HeroesSchema.sync()
         const result = await HeroesSchema.create({
