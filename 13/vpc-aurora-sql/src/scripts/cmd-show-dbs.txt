@@ -1,0 +1,25 @@
+{
+    "records": [
+        [
+            {
+                "stringValue": "information_schema"
+            }
+        ],
+        [
+            {
+                "stringValue": "heroes"
+            }
+        ],
+        [
+            {
+                "stringValue": "mysql"
+            }
+        ],
+        [
+            {
+                "stringValue": "performance_schema"
+            }
+        ]
+    ],
+    "numberOfRecordsUpdated": 0
+}

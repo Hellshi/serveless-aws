@@ -6,3 +6,5 @@ dependencies.*
 node_modules
 volume
 secrets.sh
+rds-*.txt
+secret.txt

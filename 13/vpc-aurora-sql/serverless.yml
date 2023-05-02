@@ -5,10 +5,11 @@ provider:
   name: aws
   runtime: nodejs16.x
   environment: 
-    MYSQL_HOST: ${env:MYSQL_HOST, "localhost"}
-    MYSQL_USER: ${env:MYSQL_USER, "root"}
-    MYSQL_PASS: ${env:MYSQL_PASS, "root"}
-    MYSQL_DATABASE: ${env:MYSQL_DATABASE, "database"}
+    MYSQL_HOST: ${env:MYSQL_HOST, "your db host"}
+    MYSQL_USER: ${env:MYSQL_USER, "your user"}
+    MYSQL_PASS: ${env:MYSQL_PASS, "your pass"}
+    MYSQL_PORT: ${env:MYSQL_PORT, "3306"}
+    MYSQL_DATABASE: ${env:MYSQL_DATABASE, "heroes"}
 
 plugins: 
   - serverless-offline
